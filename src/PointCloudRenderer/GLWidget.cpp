@@ -50,8 +50,10 @@ void GLWidget::initializeGL()
 	qDebug() << "                    GLSL VERSION: " << (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
 
 	glClearColor(0, 0, 0, 1);
-	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE); // cull face
+	glCullFace(GL_BACK); // cull back face
+	glFrontFace(GL_CCW); // GL_CW for clock-wise
 
 	initShaders();
 	initTextures();
