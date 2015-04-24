@@ -10,7 +10,7 @@
 #include <QSharedPointer>
 #include <QOpenGLShaderProgram>
 
-class CubeMesh;
+#include "PCLMesh.h"
 
 class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -23,8 +23,11 @@ public:
 	QSize minimumSizeHint() const Q_DECL_OVERRIDE{ return QSize(50, 50); };
 	QSize sizeHint() const Q_DECL_OVERRIDE{ return QSize(1280, 400); };
 
+	
+
 public slots:
 	void cleanup();
+	void loadMesh(QString fileName);
 
 protected:
 	void initializeGL() Q_DECL_OVERRIDE;
@@ -43,7 +46,7 @@ private:
 	QOpenGLTexture *texture;
 	QMatrix4x4 projection;
 	QMatrix4x4 modelview;
-	CubeMesh* cube;
+	PCLMesh mesh;
 };
 
 

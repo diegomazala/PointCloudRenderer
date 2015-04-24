@@ -4,9 +4,21 @@ get_filename_component(TARGET_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
 
 
-set  (SOURCE_FILES		CubeMesh.cpp AboutDialog.cpp GLWidget.cpp MainWindow.cpp AppMain.cpp )
-set  (HEADER_FILES		CubeMesh.h AboutDialog.h GLWidget.h MainWindow.h)
-set  (FORM_FILES		MainWindow.ui AboutDialog.ui )
+set  (SOURCE_FILES		PCLMesh.cpp 
+						CubeMesh.cpp 
+						AboutDialog.cpp 
+						GLWidget.cpp 
+						MainWindow.cpp 
+						AppMain.cpp )
+
+set  (HEADER_FILES		PCLMesh.h 
+						CubeMesh.h 
+						AboutDialog.h 
+						GLWidget.h 
+						MainWindow.h)
+
+set  (FORM_FILES		MainWindow.ui 
+						AboutDialog.ui )
 
 
 qt5_wrap_ui( HEADER_UI_FILES ${FORM_FILES} )
@@ -30,10 +42,12 @@ target_link_libraries (
 	${TARGET_NAME} 
 	Qt5::OpenGL
 	Qt5::Widgets
+	${PCL_COMMON_LIBRARIES} 
+	${PCL_IO_LIBRARY}
 )
 
-
-
+#MESSAGE (${PCL_COMMON_LIBRARY})
+#MESSAGE (${PCL_OCTREE_LIBRARY})
 
 #######################################################################
 #################### SETUP OUTPUT DIRECTORY ###########################

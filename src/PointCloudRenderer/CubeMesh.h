@@ -12,11 +12,13 @@ public:
     CubeMesh();
     virtual ~CubeMesh();
 
+	void init();
+	void cleanup();
+
     void draw(QOpenGLShaderProgram *program);
 
 private:
-    void init();
-
+    
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer indexBuf;
 };

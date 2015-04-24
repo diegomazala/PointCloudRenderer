@@ -23,13 +23,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::fileOpen()
 {
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "../../../data", tr("Images (*.png *.bmp *.jpg *.tif)"));
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "../../../data", tr("Point Cloud Files (*.pcd *.ply)"));
 
 	if (!fileName.isEmpty())
 	{
 		currentFileName = fileName;
-		// load image
-		//ui->glWidget->setImage(QImage(fileName));
+		
+		// load point cloud
+		ui->glWidget->loadMesh(fileName);
 	}
 }
 

@@ -3,15 +3,13 @@
 #include <QMouseEvent>
 #include <QCoreApplication>
 #include <QMessageBox>
-#include "CubeMesh.h"
 #include <math.h>
 
 
 
 
 GLWidget::GLWidget(QWidget *parent)
-	: QOpenGLWidget(parent),
-	cube(nullptr)
+	: QOpenGLWidget(parent)
 {
 }
 
@@ -20,18 +18,27 @@ GLWidget::~GLWidget()
 	cleanup();
 }
 
-
+void GLWidget::loadMesh(QString fileName)
+{
+	if (!mesh.load(fileName.toStdString()))
+	{
+		QMessageBox::critical(this, tr("Point Cloud Renderer"),
+			QString("Could not load mesh file.\n<" + fileName + ">"),
+			QMessageBox::Ok);
+	}
+	else
+	{
+		QMessageBox::warning(this, tr("Point Cloud Renderer"),
+			QString("Loaded mesh file.\n<" + fileName + ">"),
+			QMessageBox::Ok);
+	}
+}
 
 
 void GLWidget::cleanup()
 {
 	makeCurrent();
 	m_vbo.destroy();
-	if (cube != nullptr)
-	{
-		delete cube;
-		cube = nullptr;
-	}
 	doneCurrent();
 }
 
@@ -58,11 +65,11 @@ void GLWidget::initializeGL()
 	initShaders();
 	initTextures();
 
-	cube = new CubeMesh();
+	mesh.init();
 }
 
 
-//! [3]
+
 void GLWidget::initShaders()
 {
 	QString vertexShaderFile = "../../../shaders/vshader.glsl";
@@ -128,7 +135,7 @@ void GLWidget::paintGL()
 	program.setUniformValue("texture", 0);
 
 	// Draw cube geometry
-	cube->draw(&program);
+	mesh.draw(&program);
 }
 
 
@@ -148,12 +155,13 @@ void GLWidget::resizeGL(int w, int h)
 }
 
 
+
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
 }
 
 
+
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
-	
 }

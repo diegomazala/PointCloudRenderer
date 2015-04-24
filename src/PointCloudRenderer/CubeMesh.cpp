@@ -11,29 +11,30 @@ struct VertexData
     QVector2D texCoord;
 };
 
-//! [0]
-CubeMesh::CubeMesh()
-    : indexBuf(QOpenGLBuffer::IndexBuffer)
+
+CubeMesh::CubeMesh(): indexBuf(QOpenGLBuffer::IndexBuffer)
 {
-    initializeOpenGLFunctions();
-
-    // Generate 2 VBOs
-    arrayBuf.create();
-    indexBuf.create();
-
-    // Initializes cube geometry and transfers it to VBOs
-    init();
 }
 
 CubeMesh::~CubeMesh()
 {
-    arrayBuf.destroy();
-    indexBuf.destroy();
 }
-//! [0]
+
+
+void CubeMesh::cleanup()
+{
+	arrayBuf.destroy();
+	indexBuf.destroy();
+}
 
 void CubeMesh::init()
 {
+	initializeOpenGLFunctions();
+
+	// Generate 2 VBOs
+	arrayBuf.create();
+	indexBuf.create();
+
     // For cube we would need only 8 vertices but we have to
     // duplicate vertex for each face because texture coordinate
     // is different.
