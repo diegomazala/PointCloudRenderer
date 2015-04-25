@@ -42,12 +42,13 @@ target_link_libraries (
 	${TARGET_NAME} 
 	Qt5::OpenGL
 	Qt5::Widgets
-	${PCL_COMMON_LIBRARIES} 
-	${PCL_IO_LIBRARY}
+	#${PCL_COMMON_LIBRARIES} 
+	#${PCL_IO_LIBRARIES}
+	${PCL_LIBRARIES}
 )
 
-#MESSAGE (${PCL_COMMON_LIBRARY})
-#MESSAGE (${PCL_OCTREE_LIBRARY})
+#MESSAGE (${PCL_LIBRARIES})
+#MESSAGE (${PCL_DEDUP_LIBRARIES})
 
 #######################################################################
 #################### SETUP OUTPUT DIRECTORY ###########################
