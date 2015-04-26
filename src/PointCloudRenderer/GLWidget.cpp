@@ -26,12 +26,6 @@ void GLWidget::loadMesh(QString fileName)
 			QString("Could not load mesh file.\n<" + fileName + ">"),
 			QMessageBox::Ok);
 	}
-	else
-	{
-		QMessageBox::warning(this, tr("Point Cloud Renderer"),
-			QString("Loaded mesh file.\n<" + fileName + ">"),
-			QMessageBox::Ok);
-	}
 }
 
 
@@ -122,7 +116,8 @@ void GLWidget::paintGL()
 	texture->bind();
 
 	QMatrix4x4 cameraView;
-	cameraView.lookAt(QVector3D(3.0, 2.0, -5.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 1.0, 0.0));
+	//cameraView.lookAt(QVector3D(3.0, 2.0, -5.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 1.0, 0.0));
+	cameraView.lookAt(QVector3D(0.30, 0.20, -0.50), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 1.0, 0.0));
 
 	// Calculate model view transformation
 	QMatrix4x4 modelMatrix;

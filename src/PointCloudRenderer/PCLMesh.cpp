@@ -23,12 +23,17 @@ PCLMesh::~PCLMesh()
 
 bool PCLMesh::load(const std::string& meshFilePathName)
 {
-	if (pcl::io::loadPCDFile<pcl::PointXYZ>(meshFilePathName, cloud) == -1) //* load the file
+	if (pcl::io::loadPCDFile<pcl::PointXYZRGB>(meshFilePathName, cloud) == -1) //* load the file
 	{
 		PCL_ERROR("Couldn't read file: ", meshFilePathName);
 		return false;
 	}
-	return true; 
+	else
+	{
+		bindVertexArray();
+		return true;
+	}
+	
 }
 
 
@@ -42,10 +47,18 @@ void PCLMesh::init()
 {
 	initializeOpenGLFunctions();
 
+	glPointSize(3);
+
 	// Generate 2 VBOs
 	arrayBuf.create();
-	indexBuf.create();
+	//indexBuf.create();
 
+	//bindVertexArray();
+}
+
+
+void PCLMesh::bindVertexArray()
+{
 	// For cube we would need only 8 vertices but we have to
 	// duplicate vertex for each face because texture coordinate
 	// is different.
@@ -106,11 +119,20 @@ void PCLMesh::init()
 	
 	// Transfer vertex data to VBO 0
 	arrayBuf.bind();
-	arrayBuf.allocate(vertices, 24 * sizeof(VertexData));
+	//arrayBuf.allocate(vertices, 24 * sizeof(VertexData));
+	arrayBuf.allocate(reinterpret_cast<void *>(&cloud.points[0]), cloud.size() * sizeof(pcl::PointXYZRGB));
 
+	qDebug() << cloud.size();
+
+	for (auto it = cloud.points.begin(); it != cloud.points.end(); ++it)
+	{
+		qDebug() << it->x << ", " << it->y << ", " << it->z;
+	}
 	// Transfer index data to VBO 1
-	indexBuf.bind();
-	indexBuf.allocate(indices, 34 * sizeof(GLushort));
+	//indexBuf.bind();
+	//indexBuf.allocate(indices, 34 * sizeof(GLushort));
+	
+
 	
 }
 
@@ -120,7 +142,7 @@ void PCLMesh::draw(QOpenGLShaderProgram *program)
 {
 	// Tell OpenGL which VBOs to use
 	arrayBuf.bind();
-	indexBuf.bind();
+	//indexBuf.bind();
 
 	// Offset for position
 	quintptr offset = 0;
@@ -128,17 +150,18 @@ void PCLMesh::draw(QOpenGLShaderProgram *program)
 	// Tell OpenGL programmable pipeline how to locate vertex position data
 	int vertexLocation = program->attributeLocation("a_position");
 	program->enableAttributeArray(vertexLocation);
-	program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
+	program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(pcl::PointXYZRGB));
 
 	// Offset for texture coordinate
 	offset += sizeof(QVector3D);
 
 	// Tell OpenGL programmable pipeline how to locate vertex texture coordinate data
-	int texcoordLocation = program->attributeLocation("a_texcoord");
+	/*int texcoordLocation = program->attributeLocation("a_texcoord");
 	program->enableAttributeArray(texcoordLocation);
-	program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
+	program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));*/
 
 	// Draw cube geometry using indices from VBO 1
-	glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, 0);
+	//glDrawElements(GL_POINTS, 34, GL_UNSIGNED_SHORT, 0);
+	glDrawArrays(GL_POINTS, 0, cloud.size());
 }
 

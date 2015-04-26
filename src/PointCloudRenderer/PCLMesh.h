@@ -21,13 +21,17 @@ public:
 	void cleanup();
 
 	void draw(QOpenGLShaderProgram *program);
-	
+
+protected:
+
+	void bindVertexArray();
+
 private:
 
 	QOpenGLBuffer arrayBuf;
 	QOpenGLBuffer indexBuf;
 
-	pcl::PointCloud<pcl::PointXYZ> cloud;
+	pcl::PointCloud<pcl::PointXYZRGB> cloud;
 };
 
 #endif // _PCL_MESH_H_
