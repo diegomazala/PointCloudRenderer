@@ -3,13 +3,40 @@ cmake_minimum_required (VERSION 3.0 FATAL_ERROR)
 # Create folder to allocate cmake owner projects
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+#######################################################################
+########################### SETUP PROJECT #############################
+project(	PointCloudRenderer	)
+set (		PROJECT_ROOT_DIR 	"${CMAKE_CURRENT_SOURCE_DIR}" CACHE INTERNAL "Root directory")
+set (		PROJECT_SOURCE_DIR 	"${PROJECT_ROOT_DIR}/src" CACHE INTERNAL "Source directory")
+set (		PROJECT_SHADER_DIR 	"${PROJECT_ROOT_DIR}/shaders" CACHE INTERNAL "Shaders directory")
+set (		PROJECT_BINARY_DIR 	"${PROJECT_ROOT_DIR}/bin" CACHE INTERNAL "Binary output directory")
+#######################################################################
 
-project      (PointCloudRenderer)
 
-set ( PROJECT_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-set ( PROJECT_SOURCE_DIR "${PROJECT_ROOT_DIR}/src")
-set ( PROJECT_BINARY_DIR "${PROJECT_ROOT_DIR}/bin")
-set ( PROJECT_SHADER_DIR "${PROJECT_ROOT_DIR}/shaders")
+#######################################################################
+########################### SETUP PLATFORM ############################
+if (WIN32)
+	if (CMAKE_CL_64)
+		set (PROJECT_PLATFORM "Win64")
+	else (CMAKE_CL_64)
+		set (PROJECT_PLATFORM "Win32")
+	endif (CMAKE_CL_64)
+elseif (win32)
+	if (CMAKE_CL_64)
+		set (PROJECT_PLATFORM "unix64")
+	else (CMAKE_CL_64)
+		set (PROJECT_PLATFORM "unix32")
+	endif (CMAKE_CL_64)
+endif (WIN32)
+#######################################################################
+
+
+#######################################################################
+################# SETUP LOCAL INCLUDE AND LIBRARIES ###################
+include_directories(${PROJECT_ROOT_DIR}/include)
+link_directories(	${PROJECT_ROOT_DIR}/lib 
+					${PROJECT_ROOT_DIR}/lib/${PROJECT_PLATFORM})
+#######################################################################
 
 
 #######################################################################

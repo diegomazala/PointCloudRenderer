@@ -1,6 +1,7 @@
 #######################################################################
 # Setting Target_Name as current folder name
 get_filename_component(TARGET_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+project( ${TARGET_NAME} )
 
 
 
@@ -42,17 +43,13 @@ target_link_libraries (
 	${TARGET_NAME} 
 	Qt5::OpenGL
 	Qt5::Widgets
-	#${PCL_COMMON_LIBRARIES} 
-	#${PCL_IO_LIBRARIES}
 	${PCL_LIBRARIES}
 )
 
-#MESSAGE (${PCL_LIBRARIES})
-#MESSAGE (${PCL_DEDUP_LIBRARIES})
 
 #######################################################################
 #################### SETUP OUTPUT DIRECTORY ###########################
-set( CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/lib_install )
+set( CMAKE_INSTALL_PREFIX ${PROJECT_ROOT_DIR}/lib_install )
 # First for the generic no-config case (e.g. with mingw)
 set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} )
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} )
@@ -60,9 +57,8 @@ set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} )
 # Second, for multi-config builds (e.g. msvc)
 foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     #STRING( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/${OUTPUTCONFIG} )
-    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/${OUTPUTCONFIG} )
-    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/${OUTPUTCONFIG} )
+    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${OUTPUTCONFIG}_${PROJECT_PLATFORM} )
+    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${OUTPUTCONFIG}_${PROJECT_PLATFORM} )
+    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${OUTPUTCONFIG}_${PROJECT_PLATFORM} )
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 #######################################################################
-

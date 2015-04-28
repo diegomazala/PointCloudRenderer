@@ -11,6 +11,7 @@
 #include <QOpenGLShaderProgram>
 
 #include "PCLMesh.h"
+#include "trackball.hpp"
 
 class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -35,6 +36,8 @@ protected:
 	void resizeGL(int width, int height) Q_DECL_OVERRIDE;
 	void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 	void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+	void mouseReleaseEvent(QMouseEvent * event) Q_DECL_OVERRIDE;
+	void wheelEvent(QWheelEvent * event) Q_DECL_OVERRIDE;
 
 	void initShaders();
 	void initTextures();
@@ -47,6 +50,8 @@ private:
 	QMatrix4x4 projection;
 	QMatrix4x4 modelview;
 	PCLMesh mesh;
+
+	Tucano::Trackball camera;
 };
 
 

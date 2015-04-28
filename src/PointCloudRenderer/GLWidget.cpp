@@ -1,5 +1,4 @@
-﻿
-#include "GLWidget.h"
+﻿#include "GLWidget.h"
 #include <QMouseEvent>
 #include <QCoreApplication>
 #include <QMessageBox>
@@ -49,6 +48,14 @@ void GLWidget::initializeGL()
 	qDebug() << "                    RENDERDER:    " << (const char*)glGetString(GL_RENDERER);
 	qDebug() << "                    VERSION:      " << (const char*)glGetString(GL_VERSION);
 	qDebug() << "                    GLSL VERSION: " << (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+
+
+	camera.setPerspectiveMatrix(60.0, (float)this->width() / (float)this->height(), 0.1f, 100.0f);
+	camera.setRenderFlag(false);
+	camera.setViewport(Eigen::Vector2f((float)this->width(), (float)this->height()));
+
+
+
 
 	glClearColor(0, 0, 0, 1);
 	glEnable(GL_DEPTH_TEST);
@@ -122,9 +129,12 @@ void GLWidget::paintGL()
 	// Calculate model view transformation
 	QMatrix4x4 modelMatrix;
 	modelMatrix.setToIdentity();
+	
+	QMatrix4x4 mvp = QMatrix4x4((camera.getProjectionMatrix() * camera.getViewMatrix()).data());
 
 	// Set modelview-projection matrix
-	program.setUniformValue("mvp", projection * cameraView * modelMatrix);
+	//program.setUniformValue("mvp", projection * cameraView * modelMatrix);
+	program.setUniformValue("mvp", mvp);
 
 	// Use texture unit 0 which contains cube.png
 	program.setUniformValue("texture", 0);
@@ -147,16 +157,89 @@ void GLWidget::resizeGL(int w, int h)
 
 	// Set perspective projection
 	projection.perspective(fov, aspect, zNear, zFar);
+
+	
+	camera.setPerspectiveMatrix(fov, (float)this->width() / (float)this->height(), 0.1f, 100.0f);
+	camera.setViewport(Eigen::Vector2f((float)this->width(), (float)this->height()));
 }
 
 
 
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
+	setFocus();
+	Eigen::Vector2f screen_pos(event->x(), event->y());
+	if (event->modifiers() & Qt::ShiftModifier)
+	{
+		if (event->button() == Qt::LeftButton)
+		{
+			camera.translateCamera(screen_pos);
+		}
+	}
+	else
+	{
+		if (event->button() == Qt::LeftButton)
+		{
+			camera.rotateCamera(screen_pos);
+		}
+	}
+	update();
 }
 
 
 
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
+	Eigen::Vector2f screen_pos(event->x(), event->y());
+	if (event->modifiers() & Qt::ShiftModifier && event->buttons() & Qt::LeftButton)
+	{
+		camera.translateCamera(screen_pos);
+	}
+	else
+	{
+		if (event->buttons() & Qt::LeftButton)
+		{
+			camera.rotateCamera(screen_pos);
+		}
+	}
+
+	update();
+}
+
+
+void GLWidget::mouseReleaseEvent(QMouseEvent * event)
+{
+	if(event->button() == Qt::LeftButton)
+	{
+		camera.endTranslation();
+		camera.endRotation();
+	}
+
+	update();
+}
+
+
+void GLWidget::wheelEvent(QWheelEvent * event)
+{
+	const int WHEEL_STEP = 120;
+
+	float pos = event->delta() / float(WHEEL_STEP);
+
+	if (event->modifiers() & Qt::ShiftModifier) // change FOV
+	{
+		camera.incrementFov(pos);
+	}
+	else // change ZOOM
+	{
+		if ((pos > 0))
+		{
+			camera.increaseZoom(1.05);
+		}
+
+		else if (pos < 0)
+		{
+			camera.increaseZoom(1.0 / 1.05);
+		}
+	}
+	update();
 }
